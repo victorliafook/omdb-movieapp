@@ -1,68 +1,239 @@
 <!DOCTYPE html>
-<html  lang="en" ng-app="omdbApp">
+<html lang="en" ng-app="omdbApp">
 
-    <head>
-    
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="">
-    
-        <title>Open Movie Database Search</title>
-    
-    	<!-- build:css css/main.css -->
-        <link href="../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-        <link href="../bower_components/components-font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css">
-    	<!-- endbuild -->
-    	
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>Open Movie Database Search</title>
+
+    <!-- build:css css/main.css -->
+    <link href="../bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="../bower_components/components-font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css">
+    <link href="css/main.css" rel="stylesheet">
+    <!-- endbuild -->
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
-    
-    </head>
-    
-    <body>
-    
-    	<!-- Navigation -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" ui-sref="app">Home page</a>
+
+</head>
+
+<body id="body" ng-controller="mainController">
+    <div id="page-loading">
+        <div class="loader"></div>
+    </div>
+    <div id="searchModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm">
+
+            <!-- Search modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Search</h4>
                 </div>
-                
+                <div class="modal-body">
+                    <div class="alert alert-warning" role="alert" ng-show="alert != ''">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        {{alert}}
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <label for="title">Title: </label>
+                            <input type="text" class="form-control" id="title" ng-model="title">
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Type: </label>
+                            <select class="form-control" id="type" ng-model="type">
+                                <option>Movie</option>
+                                <option>Series</option>
+                                <option>Episode</option>
+                            </select>
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="year">Year: </label>
+                            <input type="text" class="form-control" id="year" ng-model="year">
+                        </div>
+                        <div class="form-group text-center">
+                            <strong>Or</strong>
+                        </div>
+                        <div class="form-group">
+                            <label for="year">Imdb ID: </label>
+                            <input type="text" class="form-control" id="imdbid" ng-model="imdbId">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer text-center">
+                    <a class="btn btn-default" ng-click="doSearch();">Submit</a>
+                </div>
             </div>
-           
-        </nav>
+
+        </div>
+    </div>
+
+    <div id="detailsModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Detail modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{feature.Title}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="media">
+                        <div class="media-left media-middle">
+
+                            <img class="media-object img-thumbnail" ng-src="{{(feature.Poster == 'N/A') ? 'img/placeholder.png' : feature.Poster}}" alt="movie poster">
+
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">Plot</h4>
+                            <p>{{feature.Plot}}</p>
+                            <h4 class="media-heading">Rating(<small>Rotten Tomatoes</small>)</h4>
+                            <span ng-show="feature.rating == null">Not Available</span>
+                            <div class="progress text-center" ng-show="feature.rating != null">
+                                <div class="progress-bar progress-bar-{{feature.ratingClass}}" role="progressbar" aria-valuenow="{{feature.rating}}" aria-valuemin="0" aria-valuemax="100" style="width: {{feature.rating}}%">
+                                    <span>{{feature.rating}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Navigation -->
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#searchModal">
+                        <i class="fa fa-search-plus"></i> Search
+                </button>
+                <div class="navbar-right">
+                    <p class="navbar-text">Open Movie Database Lookup</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <nav class="navbar navbar-default navbar-fixed-top second" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Sort by <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" ng-click="sort = 'Title'">Title</a></li>
+                            <li><a href="#" ng-click="sort = 'Year'">Year</a></li>
+                            <li><a href="#" ng-click="sort = 'Type'">Type</a></li>
+
+                        </ul>
+                    </li>
+                    <li ng-cloak><a>Results: <span class="badge">{{totalResults}}</span></a>
+                        <input type="hidden" id="pagination-pages" value="{{pagination}}" />
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container-fluid">
+        <div class="row text-center">
+            <div class="col-xs-4 col-sm-3 col-md-2" ng-repeat="item in resultList | orderBy : sort" ng-cloak>
+
+                <div class="panel panel-primary panel-front" ng-click="getFeature(item.imdbID)" data-toggle="modal" data-target="#detailsModal">
+                    
+                        <div class="panel-heading">
+                            <div class="title">{{item.Title}}</div>
+                            <span class="fa fa-{{getTypeClass(item.Type)}}" aria-hidden="true"> {{item.Type}}</span> <span class="badge">{{item.Year}}</span>
+                        </div>
+                        <div class="panel-body">
+                            <div class="media">
+                                <img ng-src="{{(item.Poster == 'N/A') ? 'img/placeholder.png' : item.Poster}}" class="media-object img-thumbnail img-responsive">
+                            </div>
+                        </div>
+                   
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <nav ng-show="totalResults > 10" class="navbar navbar-default text-center" aria-label="pagination" ng-cloak>
+                    <ul id="paginationContainer" class="pagination pagination-sm">
+
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- build:jslibs js/libs.js -->
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-resource/angular-resource.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="js/twbsPagination.js"></script>
+    <!-- endbuild -->
+
+    <!-- build:jsapp js/app.js -->
+    <script src="js/app.js"></script>
+    <script src="js/controller.js"></script>
+    <script src="js/service.js"></script>
+    <!-- endbuild -->
+
+    <script>
+        $(document).ready(function() {
+            var target = document.querySelector('#pagination-pages')
+            console.log("document ready");
+            $('#page-loading').fadeOut('slow');
+                // create an observer instance
+            var observer = new MutationObserver(function(mutations) {
+                
+                $('#paginationContainer').twbsPagination({
+                    totalPages: $('#pagination-pages').val(),
+                    visiblePages:  ($('#pagination-pages').val() > 10) ? 10 : $('#pagination-pages').val(),
+                    onPageClick: function(event, page) {
+                        angular.element(document).find('body').scope().setPage(page);
+                        angular.element(document).find('body').scope().doSearch();
+                    }
+                });
+            });
+            //observer's config:
+            var config = {
+                attributes: true,
+                childList: true,
+                characterData: true,
+                attributeFilter: ["id", "value"]
+            };
+            observer.observe(target, config);
+            
+            $('#searchModal').on('hide.bs.modal', function (e) {
+                angular.element(document).find('body').scope().clean();
+            })
+        });
         
-    	<!-- Page Content -->
-        <div class="container">
-    		
-    	</div>
-    	
-    	<!-- build:jslibs js/libs.js -->
-    	<script src="../bower_components/angular/angular.js"></script>
-    	<script src="../bower_components/angular-resource/angular-resource.js"></script>
-    	<script src="../bower_components/jquery/dist/jquery.js"></script>
-        <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    	<!-- endbuild -->
-    	
-    	<!-- build:jsapp js/app.js -->
-    	<script src="js/app.js"></script>
-    	<script src="js/controller.js"></script>
-    	<script src="js/service.js"></script>
-    	<!-- endbuild -->
-    	
-    	
-    </body>
+        
+    </script>
+
+</body>
 
 </html>
