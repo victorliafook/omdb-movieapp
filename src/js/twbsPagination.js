@@ -309,7 +309,7 @@
         totalPagesVariable: '{{total_pages}}',
         page: null,
         first: 'First',
-        prev: 'Previous',
+        prev: 'Prev',
         next: 'Next',
         last: 'Last',
         loop: false,

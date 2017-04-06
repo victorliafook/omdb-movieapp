@@ -1,5 +1,5 @@
 body {
-    padding-top: 75px;
+    padding-top: 85px;
     background-color: #D9DBDA;
 }
 
@@ -12,8 +12,16 @@ body {
     margin-top: 8px;
 }
 
+.navbar .collapse.navbar-collapse{
+    padding: 6px 3px;
+}
+
 .navbar.second li a {
     padding: 3px 15px;
+}
+
+.navbar.second .navbar-text{
+    margin: 3px 0 0 0;
 }
 
 .navbar-nav.pag>li>a {

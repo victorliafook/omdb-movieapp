@@ -19,11 +19,12 @@ angular.module("omdbApp")
             $scope.page = page;
         };
         
-        $scope.clean = function(){
+        $scope.cleanSearch = function(){
             $scope.title = "";
     		$scope.year = "";
     		$scope.type = "";
             $scope.imdbId = "";
+            
         };
         
         $scope.doSearch = function(){
@@ -94,6 +95,9 @@ angular.module("omdbApp")
                     $scope.totalResults = 0;
                     $scope.pagination = 1;
                     $scope.alert = "No results found with this criteria.";
+                }
+                if($scope.alert == ""){
+                    $('#searchModal').modal('hide');
                 }
             });
         };
