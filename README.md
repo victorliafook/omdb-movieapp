@@ -7,9 +7,10 @@ Angular web application integrated with OMDB API.
 - Card Layout.
 
 # Build Instructions
+```
 $ npm install
 $ bower install
 $ gulp
-
+```
 # Publishing
 After built, just publish /dist directory on a http web server.
