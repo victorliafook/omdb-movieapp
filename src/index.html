@@ -147,9 +147,9 @@
                         </ul>
                     </li>
                 </ul>
-                <div ng-cloak class="nav navbar-right navbar-text collapse navbar-collapse">
+                <div class="nav navbar-right navbar-text collapse navbar-collapse" ng-cloak>
                     Results:
-                    <span class="badge">{{totalResults}}</span>
+                    <span ng-cloak class="badge">{{totalResults}}</span>
                     <input type="hidden" id="pagination-pages" value="{{pagination}}" />
                 </div>
             </div>
@@ -196,7 +196,7 @@
     <script src="../bower_components/angular-resource/angular-resource.js"></script>
     <script src="../bower_components/jquery/dist/jquery.js"></script>
     <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="js/twbsPagination.js"></script>
+    <script src="js/jquery.bootpag.js"></script>
     <!-- endbuild -->
 
     <!-- build:jsapp js/app.js -->
@@ -212,15 +212,18 @@
             $('#page-loading').fadeOut('slow');
                 // create an observer instance
             var observer = new MutationObserver(function(mutations) {
+               // console.log("changed dom");
+                var pages = angular.element(document).find('body').scope().pagination;
+                //console.log(pages);
                 
-                $('#paginationContainer').twbsPagination({
-                    totalPages: $('#pagination-pages').val(),
-                    visiblePages:  ($('#pagination-pages').val() > 5) ? 5 : $('#pagination-pages').val(),
-                    onPageClick: function(event, page) {
-                        angular.element(document).find('body').scope().setPage(page);
-                        angular.element(document).find('body').scope().doSearch();
-                    }
+                $('#paginationContainer').bootpag({
+                   total: pages,
+                   maxVisible: (pages > 5) ? 5 : pages
+                }).on('page', function(event, num){
+                    angular.element(document).find('body').scope().setPage(num);
+                    angular.element(document).find('body').scope().doSearch();
                 });
+               
             });
             //observer's config:
             var config = {

@@ -12,7 +12,7 @@ body {
     margin-top: 8px;
 }
 
-.navbar .collapse.navbar-collapse{
+.navbar-inverse .collapse.navbar-collapse{
     padding: 6px 3px;
 }
 
