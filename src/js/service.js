@@ -1,3 +1,4 @@
+/*global angular*/
 "use strict";
 angular.module("omdbApp")
     .constant("baseURL","https://www.omdbapi.com/")
@@ -13,7 +14,7 @@ angular.module("omdbApp")
         this.getQueryObj = function(arr){
             var len = arr.length;
             var retObj = {};
-            if(undefined || len <= 0) return retObj;
+            if(arr === undefined || len <= 0) return retObj;
             
             for(var i = 0; i < len; i++){
                 if(arr[i].value == "") continue;
