@@ -11,7 +11,7 @@
     <link rel="icon" type="image/png" href="img/favicon.png">
     <title>Open Movie Database Search</title>
 
-    <link rel="stylesheet" href="css/main-6ca39b7fe1.css"/>
+    <link rel="stylesheet" href="css/main-76526df35d.css"/>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -143,9 +143,9 @@
                         </ul>
                     </li>
                 </ul>
-                <div ng-cloak class="nav navbar-right navbar-text collapse navbar-collapse">
+                <div class="nav navbar-right navbar-text collapse navbar-collapse" ng-cloak>
                     Results:
-                    <span class="badge">{{totalResults}}</span>
+                    <span ng-cloak class="badge">{{totalResults}}</span>
                     <input type="hidden" id="pagination-pages" value="{{pagination}}" />
                 </div>
             </div>
@@ -187,7 +187,7 @@
     </div>
 
 
-    <script src="js/libs-7ccd78bb0b.js"></script>
+    <script src="js/libs-90bea98223.js"></script>
 
     <script src="js/app.js"></script>
 
@@ -198,15 +198,18 @@
             $('#page-loading').fadeOut('slow');
                 // create an observer instance
             var observer = new MutationObserver(function(mutations) {
+               // console.log("changed dom");
+                var pages = angular.element(document).find('body').scope().pagination;
+                //console.log(pages);
                 
-                $('#paginationContainer').twbsPagination({
-                    totalPages: $('#pagination-pages').val(),
-                    visiblePages:  ($('#pagination-pages').val() > 5) ? 5 : $('#pagination-pages').val(),
-                    onPageClick: function(event, page) {
-                        angular.element(document).find('body').scope().setPage(page);
-                        angular.element(document).find('body').scope().doSearch();
-                    }
+                $('#paginationContainer').bootpag({
+                   total: pages,
+                   maxVisible: (pages > 5) ? 5 : pages
+                }).on('page', function(event, num){
+                    angular.element(document).find('body').scope().setPage(num);
+                    angular.element(document).find('body').scope().doSearch();
                 });
+               
             });
             //observer's config:
             var config = {
