@@ -1,5 +1,6 @@
 # OMDB-MovieApp
-Angular web application integrated with OMDB API.
+Angular web application integrated with OMDB API. See the live preview:
+http://liafook.com/omdb/
 
 # Features
 - Responsible, Mobile-First app.
