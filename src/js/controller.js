@@ -38,6 +38,7 @@ angular.module("omdbApp")
         };
         
         $scope.getFeature = function(id){
+            $('#page-loading').fadeIn('fast');
             $scope.findById(id);
         };
         
@@ -68,6 +69,8 @@ angular.module("omdbApp")
                     //this function is only called without an id directly from the search.
                     if(id == null)
                         $('#detailsModal').modal();
+                    $('#page-loading').fadeOut('slow');
+                    
                 }else{
                     $scope.feature = {};
                     $scope.alert = result.Error;
