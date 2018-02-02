@@ -1,6 +1,11 @@
+/*global angular*/
 'use strict';
 //application written by Victor Lia Fook victorliafook@gmail.com
 angular.module('omdbApp', ['ngResource']);
+/*
+global angular
+global $
+*/
 "use strict";
 //application written by Victor Lia Fook victorliafook@gmail.com
 angular.module("omdbApp")
@@ -41,6 +46,7 @@ angular.module("omdbApp")
         };
         
         $scope.getFeature = function(id){
+            $('#page-loading').fadeIn('fast');
             $scope.findById(id);
         };
         
@@ -71,6 +77,8 @@ angular.module("omdbApp")
                     //this function is only called without an id directly from the search.
                     if(id == null)
                         $('#detailsModal').modal();
+                    $('#page-loading').fadeOut('slow');
+                    
                 }else{
                     $scope.feature = {};
                     $scope.alert = result.Error;
@@ -113,6 +121,7 @@ angular.module("omdbApp")
             return "film";
         };
     }]);
+/*global angular*/
 "use strict";
 angular.module("omdbApp")
     .constant("baseURL","https://www.omdbapi.com/")
@@ -120,6 +129,8 @@ angular.module("omdbApp")
         return $resource(baseURL);
     }])
     .service('dataService', function(){
+        
+        this.apiKey = 'de4d6fa3'; //my OMDB api key http://www.omdbapi.com/apikey.aspx
         this.urlParams = {imdbId: 'i', title: 's', type: 'type', year: 'y', plot: 'plot', page: 'page'};
         this.getParam = function(param){
             return (this.urlParams[param] !== undefined) ? this.urlParams[param] : null;
@@ -128,14 +139,14 @@ angular.module("omdbApp")
         this.getQueryObj = function(arr){
             var len = arr.length;
             var retObj = {};
-            if(undefined || len <= 0) return retObj;
+            if(arr === undefined || len <= 0) return retObj;
             
             for(var i = 0; i < len; i++){
                 if(arr[i].value == "") continue;
                 var paramName = this.getParam(arr[i].key);
                 retObj[paramName] = arr[i].value;
             }
-           
+            retObj['apikey'] = this.apiKey;
             return retObj;
         };
         
